@@ -35,20 +35,18 @@ public class Game {
 
         int currentTurn = rand.nextInt(numberOfPlayers);
         boolean isFirstTurn = true;
+        boolean isExtraTurn = false;
         while (true) {
-            players[currentTurn].takeTurn(isFirstTurn);
-            currentTurn = (currentTurn + 1) % numberOfPlayers;
+            int dieRoll = players[currentTurn].takeTurn(isFirstTurn, isExtraTurn);
+            isExtraTurn = dieRoll == 6;
+            if (!isExtraTurn)
+                currentTurn = (currentTurn + 1) % numberOfPlayers;
 
             isFirstTurn = false;
+            // TODO - after each turn, check if someone has won
+
+            // TODO - if someone has won, end the game
         }
-
-
-        // TODO - loop through players, calling take turn on each
-
-        // TODO - after each turn, check if someone has won
-
-        // TODO - if someone has won, end the game
-
     }
 
     private void printWelcomeMessage() {

@@ -21,16 +21,13 @@ public class Player {
         return playerColor;
     }
 
-    public void takeTurn() {
-        takeTurn(false);
-    }
-
-    public void takeTurn(boolean firstTurn) {
-
+    public int takeTurn(boolean firstTurn, boolean extraTurn) {
         board.printBoard();
-        printStartOfTurnMessage(firstTurn);
+        printStartOfTurnMessage(firstTurn, extraTurn);
         int dieRoll = getDieRoll();
         board.movePlayer(playerColor, dieRoll);
+
+        return dieRoll;
     }
 
     private int getDieRoll() {
@@ -38,10 +35,12 @@ public class Player {
         return board.rollDieSequence();
     }
 
-    private void printStartOfTurnMessage(boolean firstTurn) {
+    private void printStartOfTurnMessage(boolean firstTurn, boolean extraTurn) {
         String message;
         if (firstTurn)
             message = "%s%s was randomly selected to go first.%s";
+        else if (extraTurn)
+            message = "%s%s, you rolled a 6 so you get another roll!%s";
         else
             message = "%s%s, it's your turn!%s";
 
