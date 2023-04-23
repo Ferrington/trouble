@@ -20,4 +20,32 @@ public class Player {
     public PlayerColor getPlayerColor() {
         return playerColor;
     }
+
+    public void takeTurn(boolean firstTurn) {
+        board.printBoard();
+        printStartOfTurnMessage(firstTurn);
+
+
+    }
+
+    public void takeTurn() {
+        takeTurn(false);
+    }
+
+    public void printStartOfTurnMessage(boolean firstTurn) {
+        String message;
+        if (firstTurn)
+            message = "%s%s was randomly selected to go first.%s";
+        else
+            message = "%s%s, it's your turn!%s";
+
+
+        String formattedMessage = String.format(
+                message,
+                playerColor.openTag(),
+                playerName,
+                playerColor.closeTag()
+        );
+        ioHelper.printString(formattedMessage);
+    }
 }

@@ -22,19 +22,21 @@ public class Game {
     }
 
     public void start() {
-        int numberOfPlayers = getNumberOfPlayers();
-        createPlayers(numberOfPlayers);
+        // int numberOfPlayers = getNumberOfPlayers();
+        // createPlayers(numberOfPlayers);
+        int numberOfPlayers = 3;
+        createTestPlayers(numberOfPlayers);
 
         // test output
-        for (Player player : players) {
-            System.out.printf("%s - %s%n", player.getPlayerName(), player.getPlayerColor());
-        }
+//        for (Player player : players) {
+//            System.out.printf("%s - %s%n", player.getPlayerName(), player.getPlayerColor());
+//        }
 
         int randomPlayerNumber = rand.nextInt(numberOfPlayers);
         Player firstPlayer = players[randomPlayerNumber];
 
-        // test output
-        System.out.printf("\n%s - %s will go first!%n", firstPlayer.getPlayerName(), firstPlayer.getPlayerColor());
+
+        firstPlayer.takeTurn(true);
 
         // TODO - loop through players, calling take turn on each
 
@@ -42,6 +44,16 @@ public class Game {
 
         // TODO - if someone has won, end the game
 
+    }
+
+    private void createTestPlayers(int numberOfPlayers) {
+        players = new Player[numberOfPlayers];
+
+        players[0] = new Player(PlayerColor.GREEN, "Christopher", ioHelper, board);
+        players[1] = new Player(PlayerColor.YELLOW, "Sam", ioHelper, board);
+        players[2] = new Player(PlayerColor.RED, "Bartholomew", ioHelper, board);
+
+        Arrays.sort(players, ascColor);
     }
 
     private void createPlayers(int numberOfPlayers) {
