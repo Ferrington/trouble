@@ -39,46 +39,52 @@ public class Board {
         this.G = PlayerColor.GREEN.openTag();
         this.END_G = PlayerColor.GREEN.closeTag();
 
+        // @formatter:off
         this.boardTemplate =
-                "[H00] [H01]                               [H10] [H11]\n" +
-                        "[H02] [H03]   [S0]   [S1]   [S2]   [S3]   [S4]   [S5]   [S6]   [H12] [H13] \n" +
-                        "      [0]   [1]   [2]   [3]   [4]   [5]   [6]   \n" +
-                        "  [S27] [27] " + Y + "[F00]" + END_Y + "                       " + B + "[F10]" + END_B + " [7] [S7]\n" +
-                        "        " + Y + "[F01]" + END_Y + "                   " + B + "[F11]" + END_B + "    \n" +
-                        "  [S26] [26]     " + Y + "[F02]" + END_Y + "               " + B + "[F12]" + END_B + "     [8] [S8]\n" +
-                        "            " + Y + "[F03]" + END_Y + "           " + B + "[F13]" + END_B + "        \n" +
-                        "  [S25] [25]           #####           [9] [S9]\n" +
-                        "               # d0 d2 #           \n" +
-                        "  [S24] [24]          #  d4  #          [10] [S10]\n" +
-                        "               # d3 d1 #           \n" +
-                        "  [S23] [23]           #####           [11] [S11]\n" +
-                        "            " + G + "[F33]" + END_G + "           " + R + "[F23]" + END_R + "        \n" +
-                        "  [S22] [22]     " + G + "[F32]" + END_G + "               " + R + "[F22]" + END_R + "     [12] [S12]\n" +
-                        "        " + G + "[F31]" + END_G + "                   " + R + "[F21]" + END_R + "    \n" +
-                        "  [S21] [21] " + G + "[F30]" + END_G + "                       " + R + "[F20]" + END_R + " [13] [S13]\n" +
-                        "      [20]   [19]   [18]   [17]   [16]   [15]   [14]   \n" +
-                        "[H30] [H31]   [S20]   [S19]   [S18]   [S17]   [S16]   [S15]   [S14]   [H20] [H21]\n" +
-                        "[H32] [H33]                               [H22] [H23]\n";
+            "[H00] [H01]                               [H10] [H11]\n" +
+            "[H02] [H03]   [S0]   [S1]   [S2]   [S3]   [S4]   [S5]   [S6]   [H12] [H13] \n" +
+            "      [0]   [1]   [2]   [3]   [4]   [5]   [6]   \n" +
+            String.format("  [S27] [27] %s[F00]%s                       %s[F10]%s [7] [S7]\n", Y, END_Y, B, END_B) +
+            String.format("        %s[F01]%s                   %s[F11]%s    \n", Y, END_Y, B, END_B) +
+            String.format("  [S26] [26]     %s[F02]%s               %s[F12]%s     [8] [S8]\n", Y, END_Y, B, END_B) +
+            String.format("            %s[F03]%s           %s[F13]%s        \n", Y, END_Y, B, END_B) +
+            "  [S25] [25]           #####           [9] [S9]\n" +
+            "               # d0 d2 #           \n" +
+            "  [S24] [24]          #  d4  #          [10] [S10]\n" +
+            "               # d3 d1 #           \n" +
+            "  [S23] [23]           #####           [11] [S11]\n" +
+            String.format("            %s[F33]%s           %s[F23]%s        \n", G, END_G, R, END_R) +
+            String.format("  [S22] [22]     %s[F32]%s               %s[F22]%s     [12] [S12]\n", G, END_G, R, END_R) +
+            String.format("        %s[F31]%s                   %s[F21]%s    \n", G, END_G, R, END_R) +
+            String.format("  [S21] [21] %s[F30]%s                       %s[F20]%s [13] [S13]\n", G, END_G, R, END_R) +
+            "      [20]   [19]   [18]   [17]   [16]   [15]   [14]   \n" +
+            "[H30] [H31]   [S20]   [S19]   [S18]   [S17]   [S16]   [S15]   [S14]   [H20] [H21]\n" +
+            "[H32] [H33]                               [H22] [H23]\n";
+        // @formatter:on
 
         // FOR TESTING
-        normalSpaces[1] = PlayerColor.BLUE;
-        normalSpaces[7] = PlayerColor.YELLOW;
-        normalSpaces[8] = PlayerColor.BLUE;
-        normalSpaces[15] = PlayerColor.BLUE;
-        normalSpaces[17] = PlayerColor.RED;
-        normalSpaces[22] = PlayerColor.GREEN;
-        normalSpaces[25] = PlayerColor.BLUE;
-        homePegs[0] = 3;
-        homePegs[1] = 0;
-        homePegs[2] = 3;
-        homePegs[3] = 3;
+//        normalSpaces[1] = PlayerColor.BLUE;
+//        normalSpaces[7] = PlayerColor.YELLOW;
+//        normalSpaces[8] = PlayerColor.BLUE;
+//        normalSpaces[15] = PlayerColor.BLUE;
+//        normalSpaces[17] = PlayerColor.RED;
+//        normalSpaces[22] = PlayerColor.GREEN;
+//        normalSpaces[25] = PlayerColor.BLUE;
+//        homePegs[0] = 3;
+//        homePegs[1] = 0;
+//        homePegs[2] = 3;
+//        homePegs[3] = 3;
     }
 
     public void printBoard() {
+        printBoard(null);
+    }
+
+    public void printBoard(PlayerColor currentPlayer) {
         String boardOutput = boardTemplate;
         boardOutput = formatDiePositions(boardOutput);
         boardOutput = formatNormalSpaces(boardOutput);
-        boardOutput = formatPlayerSelectOptions(boardOutput, PlayerColor.BLUE);
+        boardOutput = formatPlayerSelectOptions(boardOutput, currentPlayer);
         boardOutput = formatFinishLines(boardOutput);
         boardOutput = formatHomePegs(boardOutput);
 
@@ -189,35 +195,34 @@ public class Board {
         return boardOutput;
     }
 
-//    private int rollDieSequence() {
-//        int[] dieDisplayTemplate = {-1, -1, -1, -1, -1};
-//        int rollResult = 1;
-//        int prevResult = -1;
-//
-//        for (int i = 0; i < 5; i++) {
-//            int[] dieDisplay = dieDisplayTemplate.clone();
-//
-//            rollResult = rollDie(prevResult);
-//            prevResult = rollResult;
-//
-//            dieDisplay[i] = rollResult;
-//
-//            board.setDieDisplay(dieDisplay);
-//            IOHelper.printBoard(board);
-//            sleep(400);
-//        }
-//
-//        return rollResult;
-//    }
-//
-//    public int rollDie() {
-//        int rollResult;
-//        do {
-//            rollResult = rand.nextInt(6) + 1;
-//        } while (rollResult == prevResult);
-//
-//        return rollResult;
-//    }
+    public int rollDieSequence() {
+        int[] dieDisplayTemplate = {-1, -1, -1, -1, -1};
+        int rollResult = 1;
+        int prevResult = -1;
+
+        for (int i = 0; i < 5; i++) {
+            dieDisplay = dieDisplayTemplate.clone();
+
+            rollResult = rollDie(prevResult);
+            prevResult = rollResult;
+
+            dieDisplay[i] = rollResult;
+
+            printBoard();
+            sleep(400);
+        }
+
+        return rollResult;
+    }
+
+    private int rollDie(int prevResult) {
+        int rollResult;
+        do {
+            rollResult = rand.nextInt(6) + 1;
+        } while (rollResult == prevResult);
+
+        return rollResult;
+    }
 
     private void sleep(int milliseconds) {
         try {

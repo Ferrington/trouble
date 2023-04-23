@@ -21,18 +21,27 @@ public class Player {
         return playerColor;
     }
 
-    public void takeTurn(boolean firstTurn) {
-        board.printBoard();
-        printStartOfTurnMessage(firstTurn);
-
-
-    }
-
     public void takeTurn() {
         takeTurn(false);
     }
 
-    public void printStartOfTurnMessage(boolean firstTurn) {
+    public void takeTurn(boolean firstTurn) {
+        board.printBoard();
+        printStartOfTurnMessage(firstTurn);
+        int dieRoll = getDieRoll();
+        presentMoveOptions();
+    }
+
+    private void presentMoveOptions() {
+
+    }
+
+    private int getDieRoll() {
+        ioHelper.prompt("Press [Enter] to roll the die!");
+        return board.rollDieSequence();
+    }
+
+    private void printStartOfTurnMessage(boolean firstTurn) {
         String message;
         if (firstTurn)
             message = "%s%s was randomly selected to go first.%s";

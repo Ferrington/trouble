@@ -9,10 +9,10 @@ public class ConsoleIO implements IOHelper {
     ConsoleIO() {
         scan = new Scanner(System.in);
     }
-    
+
     public String prompt(String message) {
         System.out.print(message + " ");
-        return scan.next();
+        return scan.nextLine();
     }
 
     public void printString(String str) {
