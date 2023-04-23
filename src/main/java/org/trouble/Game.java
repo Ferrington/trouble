@@ -33,11 +33,15 @@ public class Game {
 //            System.out.printf("%s - %s%n", player.getPlayerName(), player.getPlayerColor());
 //        }
 
-//        int randomPlayerNumber = rand.nextInt(numberOfPlayers);
-//        Player firstPlayer = players[randomPlayerNumber];
-        Player firstPlayer = players[0];
+        int currentTurn = rand.nextInt(numberOfPlayers);
+        boolean isFirstTurn = true;
+        while (true) {
+            players[currentTurn].takeTurn(isFirstTurn);
+            currentTurn = (currentTurn + 1) % numberOfPlayers;
 
-        firstPlayer.takeTurn(true);
+            isFirstTurn = false;
+        }
+
 
         // TODO - loop through players, calling take turn on each
 

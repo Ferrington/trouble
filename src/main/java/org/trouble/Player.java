@@ -26,17 +26,11 @@ public class Player {
     }
 
     public void takeTurn(boolean firstTurn) {
-        while (true) {
-            board.printBoard();
-            printStartOfTurnMessage(firstTurn);
-            int dieRoll = getDieRoll();
-            presentMoveOptions(dieRoll);
-            ioHelper.prompt("Press [Enter] to continue!");
-        }
-    }
 
-    private void presentMoveOptions(int dieRoll) {
-        board.generateMoveOptions(playerColor, dieRoll);
+        board.printBoard();
+        printStartOfTurnMessage(firstTurn);
+        int dieRoll = getDieRoll();
+        board.movePlayer(playerColor, dieRoll);
     }
 
     private int getDieRoll() {

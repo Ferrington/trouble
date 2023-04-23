@@ -1,6 +1,5 @@
 package org.trouble;
 
-import java.util.Arrays;
 import java.util.Random;
 
 public class Board {
@@ -17,6 +16,7 @@ public class Board {
 
     final int PEG_COUNT = 4;
     final int NORMAL_SPACE_COUNT = 28;
+    final int HOME_MOVE = -2;
 
     IOHelper ioHelper;
     Random rand;
@@ -45,19 +45,19 @@ public class Board {
             "[H00] [H01]                               [H10] [H11]\n" +
             "[H02] [H03]   [S0]   [S1]   [S2]   [S3]   [S4]   [S5]   [S6]   [H12] [H13] \n" +
             "      [0]   [1]   [2]   [3]   [4]   [5]   [6]   \n" +
-            String.format("  [S27] [27] %s[F00]%s                       %s[F10]%s [7] [S7]\n", Y, END_Y, B, END_B) +
-            String.format("        %s[F01]%s                   %s[F11]%s    \n", Y, END_Y, B, END_B) +
-            String.format("  [S26] [26]     %s[F02]%s               %s[F12]%s     [8] [S8]\n", Y, END_Y, B, END_B) +
-            String.format("            %s[F03]%s           %s[F13]%s        \n", Y, END_Y, B, END_B) +
+            String.format("  [S27] [27] %s[F00]%s [SF00]                   [SF10] %s[F10]%s [7] [S7]\n", Y, END_Y, B, END_B) +
+            String.format("        %s[F01]%s [SF01]               [SF11] %s[F11]%s    \n", Y, END_Y, B, END_B) +
+            String.format("  [S26] [26]     %s[F02]%s [SF02]           [SF12] %s[F12]%s     [8] [S8]\n", Y, END_Y, B, END_B) +
+            String.format("            %s[F03]%s [SF03]       [SF13] %s[F13]%s        \n", Y, END_Y, B, END_B) +
             "  [S25] [25]           #####           [9] [S9]\n" +
             "               # d0 d2 #           \n" +
             "  [S24] [24]          #  d4  #          [10] [S10]\n" +
             "               # d3 d1 #           \n" +
             "  [S23] [23]           #####           [11] [S11]\n" +
-            String.format("            %s[F33]%s           %s[F23]%s        \n", G, END_G, R, END_R) +
-            String.format("  [S22] [22]     %s[F32]%s               %s[F22]%s     [12] [S12]\n", G, END_G, R, END_R) +
-            String.format("        %s[F31]%s                   %s[F21]%s    \n", G, END_G, R, END_R) +
-            String.format("  [S21] [21] %s[F30]%s                       %s[F20]%s [13] [S13]\n", G, END_G, R, END_R) +
+            String.format("            %s[F33]%s [SF33]       [SF23] %s[F23]%s        \n", G, END_G, R, END_R) +
+            String.format("  [S22] [22]     %s[F32]%s [SF32]           [SF22] %s[F22]%s     [12] [S12]\n", G, END_G, R, END_R) +
+            String.format("        %s[F31]%s [SF31]               [SF21] %s[F21]%s    \n", G, END_G, R, END_R) +
+            String.format("  [S21] [21] %s[F30]%s [SF30]                   [SF20] %s[F20]%s [13] [S13]\n", G, END_G, R, END_R) +
             "      [20]   [19]   [18]   [17]   [16]   [15]   [14]   \n" +
             "[H30] [H31]   [S20]   [S19]   [S18]   [S17]   [S16]   [S15]   [S14]   [H20] [H21]\n" +
             "[H32] [H33]                               [H22] [H23]\n";
@@ -65,41 +65,155 @@ public class Board {
 
         // FOR TESTING
 
-        normalSpaces[7] = PlayerColor.YELLOW;
-        normalSpaces[17] = PlayerColor.RED;
-        normalSpaces[22] = PlayerColor.GREEN;
-
-        normalSpaces[4] = PlayerColor.BLUE;
-        normalSpaces[5] = PlayerColor.BLUE;
-        normalSpaces[6] = PlayerColor.BLUE;
-        homePegs[0] = 3;
-        homePegs[1] = 1;
-        homePegs[2] = 3;
-        homePegs[3] = 3;
+//        normalSpaces[7] = PlayerColor.YELLOW;
+//        normalSpaces[17] = PlayerColor.RED;
+//        normalSpaces[22] = PlayerColor.GREEN;
+//
+//        normalSpaces[4] = PlayerColor.BLUE;
+//        normalSpaces[5] = PlayerColor.BLUE;
+//        finishLineSpaces[PlayerColor.BLUE.intValue][0] = PlayerColor.BLUE;
+//        homePegs[0] = 3;
+//        homePegs[1] = 1;
+//        homePegs[2] = 3;
+//        homePegs[3] = 3;
     }
 
     public void printBoard() {
-        printBoard(null, 0);
+        printBoard(new int[]{-1, -1, -1, -1}, null);
     }
 
-    public void printBoard(PlayerColor currentPlayer, int dieRoll) {
+    public void printBoard(int[] moveOptions, PlayerColor currentPlayer) {
         String boardOutput = boardTemplate;
         boardOutput = formatDiePositions(boardOutput);
         boardOutput = formatNormalSpaces(boardOutput);
         boardOutput = formatFinishLines(boardOutput);
         boardOutput = formatHomePegs(boardOutput);
-        boardOutput = formatPlayerSelectOptions(boardOutput, currentPlayer, dieRoll);
+        boardOutput = formatPlayerSelectOptions(boardOutput, moveOptions, currentPlayer);
 
 
         ioHelper.clearConsole();
         ioHelper.printString(boardOutput);
     }
 
-    public void printMoveOptions(PlayerColor currentPlayer, int dieRoll) {
-        printBoard(currentPlayer, dieRoll);
+    public void movePlayer(PlayerColor currentPlayer, int dieRoll) {
+
+        int[] relativeMoveOptions = generateMoveOptions(currentPlayer, dieRoll);
+
+        if (!validMoveExists(relativeMoveOptions)) {
+            ioHelper.printString("No valid move exists.");
+            ioHelper.prompt("Press [Enter] when you have recovered from your disappointment.");
+            return;
+        }
+
+        int[] absoluteMoveOptions = relativePositionsToAbsolute(relativeMoveOptions, currentPlayer);
+        printBoard(absoluteMoveOptions, currentPlayer);
+
+        int playerMove = getPlayerMove(relativeMoveOptions, currentPlayer);
+        movePeg(playerMove, relativeMoveOptions, currentPlayer, dieRoll);
+        printBoard();
     }
 
-    public void generateMoveOptions(PlayerColor currentPlayer, int dieRoll) {
+    private void movePeg(int playerMove, int[] relativeMoveOptions, PlayerColor currentPlayer, int dieRoll) {
+        PlayerColor[] relativeBoard = generateRelativeBoard(currentPlayer);
+
+        if (playerMove == 0) { // move out from home
+            if (relativeBoard[0] != null)
+                homePegs[relativeBoard[0].intValue]++;
+
+            homePegs[currentPlayer.intValue]--;
+            relativeBoard[0] = currentPlayer;
+        } else { // normal move
+            int startPosition = 0;
+            int moveCount = 1;
+            for (int i = 0; i < relativeMoveOptions.length; i++) {
+                if (moveCount == playerMove)
+                    startPosition = relativeMoveOptions[i];
+
+                moveCount++;
+            }
+
+            int endPosition = startPosition + dieRoll;
+
+            if (relativeBoard[endPosition] != null)
+                homePegs[relativeBoard[endPosition].intValue]++;
+
+            relativeBoard[startPosition] = null;
+            relativeBoard[endPosition] = currentPlayer;
+        }
+
+        updateAbsoluteBoard(relativeBoard, currentPlayer);
+    }
+
+    private boolean validMoveExists(int[] options) {
+        boolean validMoveExists = false;
+        for (int i = 0; i < options.length; i++) {
+            if (options[i] != -1) {
+                validMoveExists = true;
+                break;
+            }
+        }
+        return validMoveExists;
+    }
+
+    private int findLastOption(int[] moveOptions) {
+        for (int i = moveOptions.length - 1; i >= 0; i--) {
+            if (moveOptions[i] >= 0)
+                return i;
+        }
+        return -1; // should never happen
+    }
+
+    private int getPlayerMove(int[] moveOptions, PlayerColor currentPlayer) {
+        boolean homeMoveAllowed = contains(moveOptions, -2);
+        String homeMoveString = homeMoveAllowed ? "(0) to move a peg onto the board or " : "";
+
+        String normalMoveString = "";
+        int lastOptionIndex = findLastOption(moveOptions);
+        int moveCount = 0;
+        for (int i = 0; i < moveOptions.length; i++) {
+            if (moveOptions[i] < 0) continue;
+
+            if ((i == lastOptionIndex && moveCount == 0)) {
+                normalMoveString += String.format("(%s)", moveCount + 1);
+                if (moveCount == 0)
+                    normalMoveString += " ";
+            } else if (i == lastOptionIndex && moveCount == 1) {
+                normalMoveString += String.format(" or (%s) ", moveCount + 1);
+            } else if (i == lastOptionIndex) {
+                normalMoveString += String.format(", or (%s) ", moveCount + 1);
+            } else {
+                normalMoveString += String.format(", (%s)", moveCount + 1);
+            }
+            moveCount++;
+        }
+        // Select (0) to move a peg onto the board or (1), (2), or (3) to move a piece.
+        String message = String.format(
+                "%sSelect %s%sto move a piece.%s",
+                currentPlayer.openTag(),
+                homeMoveString,
+                normalMoveString,
+                currentPlayer.closeTag()
+        );
+
+        int move = -1;
+        boolean validMove = false;
+        while (!validMove) {
+            try {
+                String response = ioHelper.prompt(message);
+                move = Integer.parseInt(response);
+
+                boolean isValidHomeMove = move == 0 && homeMoveAllowed;
+                boolean isValidNormalMove = move > 0 && move <= moveCount;
+                validMove = isValidHomeMove || isValidNormalMove;
+            } catch (NumberFormatException e) {
+                ioHelper.printString("Please enter a valid move.");
+            }
+        }
+
+        return move;
+    }
+
+    private int[] generateMoveOptions(PlayerColor currentPlayer, int dieRoll) {
         PlayerColor[] relativeBoard = generateRelativeBoard(currentPlayer);
 
         int[] validMoves = new int[]{-1, -1, -1, -1};
@@ -128,7 +242,25 @@ public class Board {
             validMovesIndex++;
         }
 
-        System.out.println(Arrays.toString(validMoves));
+        return validMoves;
+    }
+
+    private int[] relativePositionsToAbsolute(int[] positions, PlayerColor currentPlayer) {
+        int offset = currentPlayer.homePosition();
+        int[] translatedPositions = new int[positions.length];
+        for (int i = 0; i < positions.length; i++) {
+            // don't convert finish line positions
+            if (positions[i] >= normalSpaces.length)
+                translatedPositions[i] = positions[i];
+                // convert normal spaces
+            else if (positions[i] >= 0)
+                translatedPositions[i] = (positions[i] + offset) % normalSpaces.length;
+                // don't convert -1 (null) or -2 (home) positions
+            else
+                translatedPositions[i] = positions[i];
+        }
+
+        return translatedPositions;
     }
 
     private PlayerColor[] generateRelativeBoard(PlayerColor currentPlayer) {
@@ -147,12 +279,25 @@ public class Board {
         return relativeSpaces;
     }
 
-    private String formatPlayerSelectOptions(String boardOutput, PlayerColor currentPlayer, int dieRoll) {
+    private void updateAbsoluteBoard(PlayerColor[] relativeBoard, PlayerColor currentPlayer) {
+        int offset = currentPlayer.homePosition();
+        for (int i = 0; i < normalSpaces.length; i++) {
+            int translatedIndex = (i + normalSpaces.length - offset) % normalSpaces.length;
+            normalSpaces[i] = relativeBoard[translatedIndex];
+        }
+
+        for (int i = 0; i < PEG_COUNT; i++) {
+            int translatedIndex = normalSpaces.length + i;
+            finishLineSpaces[currentPlayer.intValue][i] = relativeBoard[translatedIndex];
+        }
+    }
+
+    private String formatPlayerSelectOptions(String boardOutput, int[] moveOptions, PlayerColor currentPlayer) {
         int selectionNumber = 1;
         for (int i = 0; i < normalSpaces.length; i++) {
             String replaceString = String.format("[S%s]", i);
             String displayString;
-            if (normalSpaces[i] == currentPlayer && currentPlayer != null) {
+            if (contains(moveOptions, i)) {
                 displayString = String.format(
                         "%s%s%s",
                         normalSpaces[i].openTag(),
@@ -164,11 +309,38 @@ public class Board {
                 displayString = " ";
             }
 
-
             boardOutput = boardOutput.replace(replaceString, displayString);
         }
 
+        for (int i = 0; i < finishLineSpaces.length; i++) {
+            for (int j = 0; j < PEG_COUNT; j++) {
+                String replaceString = String.format("[SF%s%s]", i, j);
+                String displayString;
+                if (contains(moveOptions, normalSpaces.length + j) && currentPlayer.intValue == i) {
+                    displayString = String.format(
+                            "%s%s%s",
+                            currentPlayer.openTag(),
+                            selectionNumber,
+                            currentPlayer.closeTag()
+                    );
+                    selectionNumber++;
+                } else {
+                    displayString = " ";
+                }
+
+                boardOutput = boardOutput.replace(replaceString, displayString);
+            }
+        }
+
         return boardOutput;
+    }
+
+    private boolean contains(int[] haystack, int needle) {
+        for (int n : haystack) {
+            if (n == needle)
+                return true;
+        }
+        return false;
     }
 
     private String formatHomePegs(String boardOutput) {
