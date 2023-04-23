@@ -22,4 +22,8 @@ public enum PlayerColor {
     String closeTag() {
         return RESET;
     }
+
+    int homePosition() {
+        return intValue * 7;
+    }
 }

@@ -1,5 +1,6 @@
 package org.trouble;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Board {
@@ -63,36 +64,90 @@ public class Board {
         // @formatter:on
 
         // FOR TESTING
-//        normalSpaces[1] = PlayerColor.BLUE;
-//        normalSpaces[7] = PlayerColor.YELLOW;
-//        normalSpaces[8] = PlayerColor.BLUE;
-//        normalSpaces[15] = PlayerColor.BLUE;
-//        normalSpaces[17] = PlayerColor.RED;
-//        normalSpaces[22] = PlayerColor.GREEN;
-//        normalSpaces[25] = PlayerColor.BLUE;
-//        homePegs[0] = 3;
-//        homePegs[1] = 0;
-//        homePegs[2] = 3;
-//        homePegs[3] = 3;
+
+        normalSpaces[7] = PlayerColor.YELLOW;
+        normalSpaces[17] = PlayerColor.RED;
+        normalSpaces[22] = PlayerColor.GREEN;
+
+        normalSpaces[4] = PlayerColor.BLUE;
+        normalSpaces[5] = PlayerColor.BLUE;
+        normalSpaces[6] = PlayerColor.BLUE;
+        homePegs[0] = 3;
+        homePegs[1] = 1;
+        homePegs[2] = 3;
+        homePegs[3] = 3;
     }
 
     public void printBoard() {
-        printBoard(null);
+        printBoard(null, 0);
     }
 
-    public void printBoard(PlayerColor currentPlayer) {
+    public void printBoard(PlayerColor currentPlayer, int dieRoll) {
         String boardOutput = boardTemplate;
         boardOutput = formatDiePositions(boardOutput);
         boardOutput = formatNormalSpaces(boardOutput);
-        boardOutput = formatPlayerSelectOptions(boardOutput, currentPlayer);
         boardOutput = formatFinishLines(boardOutput);
         boardOutput = formatHomePegs(boardOutput);
+        boardOutput = formatPlayerSelectOptions(boardOutput, currentPlayer, dieRoll);
+
 
         ioHelper.clearConsole();
         ioHelper.printString(boardOutput);
     }
 
-    private String formatPlayerSelectOptions(String boardOutput, PlayerColor currentPlayer) {
+    public void printMoveOptions(PlayerColor currentPlayer, int dieRoll) {
+        printBoard(currentPlayer, dieRoll);
+    }
+
+    public void generateMoveOptions(PlayerColor currentPlayer, int dieRoll) {
+        PlayerColor[] relativeBoard = generateRelativeBoard(currentPlayer);
+
+        int[] validMoves = new int[]{-1, -1, -1, -1};
+        int validMovesIndex = 0;
+
+        // can move a peg out if they rolled a 6 and they don't already have a peg there
+        if (dieRoll == 6 && relativeBoard[0] != currentPlayer) {
+            validMoves[validMovesIndex] = -2;
+            validMovesIndex++;
+        }
+
+        for (int i = 0; i < relativeBoard.length; i++) {
+            // only interested in current player's pegs
+            if (relativeBoard[i] != currentPlayer) continue;
+
+            // destination doesn't exist
+            int desiredSpace = i + dieRoll;
+            if (desiredSpace >= relativeBoard.length) continue;
+
+            // currentPlayer already occupies destination
+            PlayerColor playerOccupyingDestination = relativeBoard[desiredSpace];
+            if (playerOccupyingDestination == currentPlayer) continue;
+
+            // all checks satisfied, is valid move
+            validMoves[validMovesIndex] = i;
+            validMovesIndex++;
+        }
+
+        System.out.println(Arrays.toString(validMoves));
+    }
+
+    private PlayerColor[] generateRelativeBoard(PlayerColor currentPlayer) {
+        int offset = currentPlayer.homePosition();
+        PlayerColor[] relativeSpaces = new PlayerColor[normalSpaces.length + PEG_COUNT];
+        for (int i = 0; i < normalSpaces.length; i++) {
+            int translatedIndex = (i + normalSpaces.length - offset) % normalSpaces.length;
+            relativeSpaces[translatedIndex] = normalSpaces[i];
+        }
+
+        for (int i = 0; i < PEG_COUNT; i++) {
+            int translatedIndex = normalSpaces.length + i;
+            relativeSpaces[translatedIndex] = finishLineSpaces[currentPlayer.intValue][i];
+        }
+
+        return relativeSpaces;
+    }
+
+    private String formatPlayerSelectOptions(String boardOutput, PlayerColor currentPlayer, int dieRoll) {
         int selectionNumber = 1;
         for (int i = 0; i < normalSpaces.length; i++) {
             String replaceString = String.format("[S%s]", i);

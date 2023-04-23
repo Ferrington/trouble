@@ -26,14 +26,17 @@ public class Player {
     }
 
     public void takeTurn(boolean firstTurn) {
-        board.printBoard();
-        printStartOfTurnMessage(firstTurn);
-        int dieRoll = getDieRoll();
-        presentMoveOptions();
+        while (true) {
+            board.printBoard();
+            printStartOfTurnMessage(firstTurn);
+            int dieRoll = getDieRoll();
+            presentMoveOptions(dieRoll);
+            ioHelper.prompt("Press [Enter] to continue!");
+        }
     }
 
-    private void presentMoveOptions() {
-
+    private void presentMoveOptions(int dieRoll) {
+        board.generateMoveOptions(playerColor, dieRoll);
     }
 
     private int getDieRoll() {
@@ -47,7 +50,6 @@ public class Player {
             message = "%s%s was randomly selected to go first.%s";
         else
             message = "%s%s, it's your turn!%s";
-
 
         String formattedMessage = String.format(
                 message,

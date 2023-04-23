@@ -33,9 +33,9 @@ public class Game {
 //            System.out.printf("%s - %s%n", player.getPlayerName(), player.getPlayerColor());
 //        }
 
-        int randomPlayerNumber = rand.nextInt(numberOfPlayers);
-        Player firstPlayer = players[randomPlayerNumber];
-
+//        int randomPlayerNumber = rand.nextInt(numberOfPlayers);
+//        Player firstPlayer = players[randomPlayerNumber];
+        Player firstPlayer = players[0];
 
         firstPlayer.takeTurn(true);
 
@@ -65,8 +65,8 @@ public class Game {
     private void createTestPlayers(int numberOfPlayers) {
         players = new Player[numberOfPlayers];
 
-        players[0] = new Player(PlayerColor.GREEN, "Christopher", ioHelper, board);
-        players[1] = new Player(PlayerColor.YELLOW, "Sam", ioHelper, board);
+        players[0] = new Player(PlayerColor.BLUE, "Christopher", ioHelper, board);
+        players[1] = new Player(PlayerColor.GREEN, "Sam", ioHelper, board);
         players[2] = new Player(PlayerColor.RED, "Bartholomew", ioHelper, board);
 
         Arrays.sort(players, ascColor);
