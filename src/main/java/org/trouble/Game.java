@@ -22,8 +22,9 @@ public class Game {
     }
 
     public void start() {
-        // int numberOfPlayers = getNumberOfPlayers();
-        // createPlayers(numberOfPlayers);
+//        printWelcomeMessage();
+//        int numberOfPlayers = getNumberOfPlayers();
+//        createPlayers(numberOfPlayers);
         int numberOfPlayers = 3;
         createTestPlayers(numberOfPlayers);
 
@@ -44,6 +45,21 @@ public class Game {
 
         // TODO - if someone has won, end the game
 
+    }
+
+    private void printWelcomeMessage() {
+        ioHelper.clearConsole();
+
+        // @formatter:off
+        String message =
+            " _________                          __       __\n" +
+            "|  _   _  |                        [  |     [  |\n" +
+            "|_/ | | \\_|_ .--.   .--.   __   _   | |.--.  | | .---.\n" +
+            "    | |   [ `/'`\\]/ .'`\\ \\[  | | |  | '/'`\\ \\| |/ /__\\\n" +
+            "   _| |_   | |    | \\__. | | \\_/ |, |  \\__/ || || \\__.,\n" +
+            "  |_____| [___]    '.__.'  '.__.'_/[__;.__.'[___]'.__.'\n";
+        // @formatter:on
+        ioHelper.printString(message);
     }
 
     private void createTestPlayers(int numberOfPlayers) {
