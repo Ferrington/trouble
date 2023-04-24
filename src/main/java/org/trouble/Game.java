@@ -22,16 +22,11 @@ public class Game {
     }
 
     public void start() {
-//        printWelcomeMessage();
-//        int numberOfPlayers = getNumberOfPlayers();
-//        createPlayers(numberOfPlayers);
-        int numberOfPlayers = 3;
-        createTestPlayers(numberOfPlayers);
-
-        // test output
-//        for (Player player : players) {
-//            System.out.printf("%s - %s%n", player.getPlayerName(), player.getPlayerColor());
-//        }
+        printWelcomeMessage();
+        int numberOfPlayers = getNumberOfPlayers();
+        createPlayers(numberOfPlayers);
+//        int numberOfPlayers = 3;
+//        createTestPlayers(numberOfPlayers);
 
         int currentTurn = rand.nextInt(numberOfPlayers);
         boolean isFirstTurn = true;
@@ -84,15 +79,23 @@ public class Game {
 
     private void printWelcomeMessage() {
         ioHelper.clearConsole();
+        String Y = PlayerColor.YELLOW.openTag();
+        String END_Y = PlayerColor.YELLOW.closeTag();
+        String B = PlayerColor.BLUE.openTag();
+        String END_B = PlayerColor.BLUE.closeTag();
+        String R = PlayerColor.RED.openTag();
+        String END_R = PlayerColor.RED.closeTag();
+        String G = PlayerColor.GREEN.openTag();
+        String END_G = PlayerColor.GREEN.closeTag();
 
         // @formatter:off
         String message =
-            " _________                          __       __\n" +
-            "|  _   _  |                        [  |     [  |\n" +
-            "|_/ | | \\_|_ .--.   .--.   __   _   | |.--.  | | .---.\n" +
-            "    | |   [ `/'`\\]/ .'`\\ \\[  | | |  | '/'`\\ \\| |/ /__\\\n" +
-            "   _| |_   | |    | \\__. | | \\_/ |, |  \\__/ || || \\__.,\n" +
-            "  |_____| [___]    '.__.'  '.__.'_/[__;.__.'[___]'.__.'\n";
+            String.format(" %s_________                          __%s       %s__%s\n",G,END_G,Y,END_Y) +
+            String.format("%s|  _   _  |                        [  |%s     %s[  |%s\n",G,END_G,Y,END_Y) +
+            String.format("%s|_/ | | \\_|%s%s_ .--.%s   %s.--.%s   %s__   _%s   %s| |.--.%s  %s| |%s %s.---.%s\n",G,END_G,Y,END_Y,B,END_B,R,END_R,G,END_G,Y,END_Y,B,END_B) +
+            String.format("    %s| |%s   %s[ `/'`\\]%s%s/ .'`\\ \\%s%s[  | | |%s  %s| '/'`\\ \\%s%s| |%s%s/ /__\\%s\n",G,END_G,Y,END_Y,B,END_B,R,END_R,G,END_G,Y,END_Y,B,END_B) +
+            String.format("   %s_| |_%s   %s| |%s    %s| \\__. |%s %s| \\_/ |,%s %s|  \\__/ |%s%s| |%s%s| \\__.,%s\n",G,END_G,Y,END_Y,B,END_B,R,END_R,G,END_G,Y,END_Y,B,END_B) +
+            String.format("  %s|_____|%s %s[___]%s    %s'.__.'%s  %s'.__.'_/%s%s[__;.__.'%s%s[___]%s%s'.__.'%s\n",G,END_G,Y,END_Y,B,END_B,R,END_R,G,END_G,Y,END_Y,B,END_B);
         // @formatter:on
         ioHelper.printString(message);
     }
