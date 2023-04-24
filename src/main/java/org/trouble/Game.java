@@ -43,8 +43,6 @@ public class Game {
         printWelcomeMessage();
         int numberOfPlayers = getNumberOfPlayers();
         createPlayers(numberOfPlayers);
-//        int numberOfPlayers = 3;
-//        createTestPlayers(numberOfPlayers);
 
         int currentTurn = rand.nextInt(numberOfPlayers);
         boolean isFirstTurn = true;

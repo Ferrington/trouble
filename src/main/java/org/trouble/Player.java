@@ -31,7 +31,12 @@ public class Player {
     }
 
     private int getDieRoll() {
-        ioHelper.prompt("Press [Enter] to roll the die!");
+        String message = String.format(
+                "%sPress [Enter] to roll the die!%s",
+                playerColor.openTag(),
+                playerColor.closeTag()
+        );
+        ioHelper.prompt(message);
         return board.rollDieSequence();
     }
 
