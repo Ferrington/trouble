@@ -1,5 +1,6 @@
 package org.trouble;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Board {
@@ -111,6 +112,9 @@ public class Board {
         int playerMove = getPlayerMove(relativeMoveOptions, currentPlayer);
         movePeg(playerMove, relativeMoveOptions, currentPlayer, dieRoll);
         printBoard();
+
+        System.out.println(playerMove);
+        System.out.println(Arrays.toString(relativeMoveOptions));
     }
 
     private void movePeg(int playerMove, int[] relativeMoveOptions, PlayerColor currentPlayer, int dieRoll) {
@@ -123,9 +127,10 @@ public class Board {
             homePegs[currentPlayer.intValue]--;
             relativeBoard[0] = currentPlayer;
         } else { // normal move
-            int startPosition = 0;
+            int startPosition = -100;
             int moveCount = 1;
             for (int i = 0; i < relativeMoveOptions.length; i++) {
+                if (relativeMoveOptions[i] < 0) continue;
                 if (moveCount == playerMove)
                     startPosition = relativeMoveOptions[i];
 
@@ -220,7 +225,8 @@ public class Board {
         int validMovesIndex = 0;
 
         // can move a peg out if they rolled a 6 and they don't already have a peg there
-        if (dieRoll == 6 && relativeBoard[0] != currentPlayer) {
+//        if (dieRoll == 6 && relativeBoard[0] != currentPlayer && homePegs[currentPlayer.intValue] > 0 ) {
+        if (relativeBoard[0] != currentPlayer && homePegs[currentPlayer.intValue] > 0) {
             validMoves[validMovesIndex] = -2;
             validMovesIndex++;
         }
@@ -292,8 +298,20 @@ public class Board {
         }
     }
 
-    private String formatPlayerSelectOptions(String boardOutput, int[] moveOptions, PlayerColor currentPlayer) {
+    private int getSelectionNumber(int[] moveOptions, int position) {
         int selectionNumber = 1;
+        for (int i = 0; i < moveOptions.length; i++) {
+            if (moveOptions[i] == position)
+                return selectionNumber;
+
+            if (moveOptions[i] >= 0)
+                selectionNumber++;
+        }
+
+        return selectionNumber;
+    }
+
+    private String formatPlayerSelectOptions(String boardOutput, int[] moveOptions, PlayerColor currentPlayer) {
         for (int i = 0; i < normalSpaces.length; i++) {
             String replaceString = String.format("[S%s]", i);
             String displayString;
@@ -301,10 +319,9 @@ public class Board {
                 displayString = String.format(
                         "%s%s%s",
                         normalSpaces[i].openTag(),
-                        selectionNumber,
+                        getSelectionNumber(moveOptions, i),
                         normalSpaces[i].closeTag()
                 );
-                selectionNumber++;
             } else {
                 displayString = " ";
             }
@@ -320,10 +337,9 @@ public class Board {
                     displayString = String.format(
                             "%s%s%s",
                             currentPlayer.openTag(),
-                            selectionNumber,
+                            getSelectionNumber(moveOptions, normalSpaces.length + j),
                             currentPlayer.closeTag()
                     );
-                    selectionNumber++;
                 } else {
                     displayString = " ";
                 }
