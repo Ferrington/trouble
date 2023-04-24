@@ -22,7 +22,7 @@ public class Player {
     }
 
     public int takeTurn(boolean firstTurn, boolean extraTurn) {
-//        board.printBoard();
+        board.printBoard();
         printStartOfTurnMessage(firstTurn, extraTurn);
         int dieRoll = getDieRoll();
         board.movePlayer(playerColor, dieRoll);

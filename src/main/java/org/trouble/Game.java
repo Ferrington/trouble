@@ -44,9 +44,42 @@ public class Game {
 
             isFirstTurn = false;
             // TODO - after each turn, check if someone has won
+            PlayerColor winner = board.whoWon();
+            if (winner != null) {
+                ioHelper.clearConsole();
+                printVictoryScreen(winner);
+                break;
+            }
 
             // TODO - if someone has won, end the game
         }
+    }
+
+    private void printVictoryScreen(PlayerColor winner) {
+        Player winningPlayer = null;
+        for (int i = 0; i < players.length; i++) {
+            if (players[i].getPlayerColor() == winner) {
+                winningPlayer = players[i];
+                break;
+            }
+        }
+
+        // @formatter:off
+        String splash =
+            " ____  ____                 ____      ____  _            _  \n" +
+            "|_  _||_  _|               |_  _|    |_  _|(_)          | | \n" +
+            "  \\ \\  / / .--.   __   _     \\ \\  /\\  / /  __   _ .--.  | | \n" +
+            "   \\ \\/ // .'`\\ \\[  | | |     \\ \\/  \\/ /  [  | [ `.-. | | | \n" +
+            "   _|  |_| \\__. | | \\_/ |,     \\  /\\  /    | |  | | | | |_| \n" +
+            "  |______|'.__.'  '.__.'_/      \\/  \\/    [___][___||__](_) \n";
+
+        String splashWithColor = winner.openTag() + splash + winner.closeTag();
+        ioHelper.printString(splashWithColor);
+        // @formatter:on
+
+        String message = String.format("Congratulations, %s. You did it!", winningPlayer.getPlayerName());
+        String messageWithColor = winner.openTag() + message + winner.closeTag();
+        ioHelper.printString(messageWithColor);
     }
 
     private void printWelcomeMessage() {

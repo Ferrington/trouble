@@ -1,6 +1,5 @@
 package org.trouble;
 
-import java.util.Arrays;
 import java.util.Random;
 
 public class Board {
@@ -66,6 +65,10 @@ public class Board {
 
         // FOR TESTING
 
+//        finishLineSpaces[PlayerColor.BLUE.intValue][0] = PlayerColor.BLUE;
+//        finishLineSpaces[PlayerColor.BLUE.intValue][1] = PlayerColor.BLUE;
+//        finishLineSpaces[PlayerColor.BLUE.intValue][2] = PlayerColor.BLUE;
+//        finishLineSpaces[PlayerColor.BLUE.intValue][3] = PlayerColor.BLUE;
 //        normalSpaces[7] = PlayerColor.YELLOW;
 //        normalSpaces[17] = PlayerColor.RED;
 //        normalSpaces[22] = PlayerColor.GREEN;
@@ -96,6 +99,22 @@ public class Board {
         ioHelper.printString(boardOutput);
     }
 
+    public PlayerColor whoWon() {
+        for (int i = 0; i < finishLineSpaces.length; i++) {
+            boolean allFinishLineSpacesFull = true;
+            for (int j = 0; j < finishLineSpaces[i].length; j++) {
+                if (finishLineSpaces[i][j] == null) {
+                    allFinishLineSpacesFull = false;
+                    break;
+                }
+            }
+            if (allFinishLineSpacesFull)
+                return PlayerColor.values()[i];
+        }
+
+        return null;
+    }
+
     public void movePlayer(PlayerColor currentPlayer, int dieRoll) {
 
         int[] relativeMoveOptions = generateMoveOptions(currentPlayer, dieRoll);
@@ -112,9 +131,6 @@ public class Board {
         int playerMove = getPlayerMove(relativeMoveOptions, currentPlayer);
         movePeg(playerMove, relativeMoveOptions, currentPlayer, dieRoll);
         printBoard();
-
-        System.out.println(playerMove);
-        System.out.println(Arrays.toString(relativeMoveOptions));
     }
 
     private void movePeg(int playerMove, int[] relativeMoveOptions, PlayerColor currentPlayer, int dieRoll) {
