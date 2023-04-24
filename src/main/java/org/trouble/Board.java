@@ -16,7 +16,6 @@ public class Board {
 
     final int PEG_COUNT = 4;
     final int NORMAL_SPACE_COUNT = 28;
-    final int HOME_MOVE = -2;
 
     IOHelper ioHelper;
     Random rand;
@@ -42,25 +41,25 @@ public class Board {
 
         // @formatter:off
         this.boardTemplate =
-            "[H00] [H01]                               [H10] [H11]\n" +
-            "[H02] [H03]   [S0]   [S1]   [S2]   [S3]   [S4]   [S5]   [S6]   [H12] [H13] \n" +
-            "      [0]   [1]   [2]   [3]   [4]   [5]   [6]   \n" +
-            String.format("  [S27] [27] %s[F00]%s [SF00]                   [SF10] %s[F10]%s [7] [S7]\n", Y, END_Y, B, END_B) +
-            String.format("        %s[F01]%s [SF01]               [SF11] %s[F11]%s    \n", Y, END_Y, B, END_B) +
-            String.format("  [S26] [26]     %s[F02]%s [SF02]           [SF12] %s[F12]%s     [8] [S8]\n", Y, END_Y, B, END_B) +
-            String.format("            %s[F03]%s [SF03]       [SF13] %s[F13]%s        \n", Y, END_Y, B, END_B) +
-            "  [S25] [25]           #####           [9] [S9]\n" +
-            "               # d0 d2 #           \n" +
-            "  [S24] [24]          #  d4  #          [10] [S10]\n" +
-            "               # d3 d1 #           \n" +
-            "  [S23] [23]           #####           [11] [S11]\n" +
-            String.format("            %s[F33]%s [SF33]       [SF23] %s[F23]%s        \n", G, END_G, R, END_R) +
-            String.format("  [S22] [22]     %s[F32]%s [SF32]           [SF22] %s[F22]%s     [12] [S12]\n", G, END_G, R, END_R) +
-            String.format("        %s[F31]%s [SF31]               [SF21] %s[F21]%s    \n", G, END_G, R, END_R) +
-            String.format("  [S21] [21] %s[F30]%s [SF30]                   [SF20] %s[F20]%s [13] [S13]\n", G, END_G, R, END_R) +
-            "      [20]   [19]   [18]   [17]   [16]   [15]   [14]   \n" +
-            "[H30] [H31]   [S20]   [S19]   [S18]   [S17]   [S16]   [S15]   [S14]   [H20] [H21]\n" +
-            "[H32] [H33]                               [H22] [H23]\n";
+            "[h0] [H00] [H01]                               [H10] [H11] [h1]\n" +
+            "  [H02] [H03]   [S0]   [S1]   [S2]   [S3]   [S4]   [S5]   [S6]   [H12] [H13] \n" +
+            "        [0]   [1]   [2]   [3]   [4]   [5]   [6]   \n" +
+            String.format("    [S27] [27] %s[F00]%s [SF00]                   [SF10] %s[F10]%s [7] [S7]\n", Y, END_Y, B, END_B) +
+            String.format("          %s[F01]%s [SF01]               [SF11] %s[F11]%s    \n", Y, END_Y, B, END_B) +
+            String.format("    [S26] [26]     %s[F02]%s [SF02]           [SF12] %s[F12]%s     [8] [S8]\n", Y, END_Y, B, END_B) +
+            String.format("              %s[F03]%s [SF03]       [SF13] %s[F13]%s        \n", Y, END_Y, B, END_B) +
+            "    [S25] [25]           #####           [9] [S9]\n" +
+            "                 # d0 d2 #           \n" +
+            "    [S24] [24]          #  d4  #          [10] [S10]\n" +
+            "                 # d3 d1 #           \n" +
+            "    [S23] [23]           #####           [11] [S11]\n" +
+            String.format("              %s[F33]%s [SF33]       [SF23] %s[F23]%s        \n", G, END_G, R, END_R) +
+            String.format("    [S22] [22]     %s[F32]%s [SF32]           [SF22] %s[F22]%s     [12] [S12]\n", G, END_G, R, END_R) +
+            String.format("          %s[F31]%s [SF31]               [SF21] %s[F21]%s    \n", G, END_G, R, END_R) +
+            String.format("    [S21] [21] %s[F30]%s [SF30]                   [SF20] %s[F20]%s [13] [S13]\n", G, END_G, R, END_R) +
+            "        [20]   [19]   [18]   [17]   [16]   [15]   [14]   \n" +
+            "[h3] [H30] [H31]   [S20]   [S19]   [S18]   [S17]   [S16]   [S15]   [S14]   [H20] [H21] [h2]\n" +
+            "  [H32] [H33]                               [H22] [H23]\n";
         // @formatter:on
     }
 
@@ -317,19 +316,35 @@ public class Board {
     }
 
     private String formatPlayerSelectOptions(String boardOutput, int[] moveOptions, PlayerColor currentPlayer) {
+        for (int i = 0; i < homePegs.length; i++) {
+            String replaceString = String.format("[h%s]", i);
+            String displayString;
+            if (contains(moveOptions, -2) && currentPlayer.intValue == i)
+                displayString = String.format(
+                        "%s%s%s",
+                        currentPlayer.openTag(),
+                        "0",
+                        currentPlayer.closeTag()
+                );
+            else
+                displayString = " ";
+
+            boardOutput = boardOutput.replace(replaceString, displayString);
+        }
+
         for (int i = 0; i < normalSpaces.length; i++) {
             String replaceString = String.format("[S%s]", i);
             String displayString;
-            if (contains(moveOptions, i)) {
+            if (contains(moveOptions, i))
                 displayString = String.format(
                         "%s%s%s",
                         normalSpaces[i].openTag(),
                         getSelectionNumber(moveOptions, i),
                         normalSpaces[i].closeTag()
                 );
-            } else {
+            else
                 displayString = " ";
-            }
+
 
             boardOutput = boardOutput.replace(replaceString, displayString);
         }
@@ -338,16 +353,16 @@ public class Board {
             for (int j = 0; j < PEG_COUNT; j++) {
                 String replaceString = String.format("[SF%s%s]", i, j);
                 String displayString;
-                if (contains(moveOptions, normalSpaces.length + j) && currentPlayer.intValue == i) {
+                if (contains(moveOptions, normalSpaces.length + j) && currentPlayer.intValue == i)
                     displayString = String.format(
                             "%s%s%s",
                             currentPlayer.openTag(),
                             getSelectionNumber(moveOptions, normalSpaces.length + j),
                             currentPlayer.closeTag()
                     );
-                } else {
+                else
                     displayString = " ";
-                }
+
 
                 boardOutput = boardOutput.replace(replaceString, displayString);
             }

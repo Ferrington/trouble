@@ -54,15 +54,13 @@ public class Game {
                 currentTurn = (currentTurn + 1) % numberOfPlayers;
 
             isFirstTurn = false;
-            // TODO - after each turn, check if someone has won
+
             PlayerColor winner = board.whoWon();
             if (winner != null) {
                 ioHelper.clearConsole();
                 printVictoryScreen(winner);
                 break;
             }
-
-            // TODO - if someone has won, end the game
         }
     }
 
