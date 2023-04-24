@@ -62,24 +62,6 @@ public class Board {
             "[H30] [H31]   [S20]   [S19]   [S18]   [S17]   [S16]   [S15]   [S14]   [H20] [H21]\n" +
             "[H32] [H33]                               [H22] [H23]\n";
         // @formatter:on
-
-        // FOR TESTING
-
-//        finishLineSpaces[PlayerColor.BLUE.intValue][0] = PlayerColor.BLUE;
-//        finishLineSpaces[PlayerColor.BLUE.intValue][1] = PlayerColor.BLUE;
-//        finishLineSpaces[PlayerColor.BLUE.intValue][2] = PlayerColor.BLUE;
-//        finishLineSpaces[PlayerColor.BLUE.intValue][3] = PlayerColor.BLUE;
-//        normalSpaces[7] = PlayerColor.YELLOW;
-//        normalSpaces[17] = PlayerColor.RED;
-//        normalSpaces[22] = PlayerColor.GREEN;
-//
-//        normalSpaces[4] = PlayerColor.BLUE;
-//        normalSpaces[5] = PlayerColor.BLUE;
-//        finishLineSpaces[PlayerColor.BLUE.intValue][0] = PlayerColor.BLUE;
-//        homePegs[0] = 3;
-//        homePegs[1] = 1;
-//        homePegs[2] = 3;
-//        homePegs[3] = 3;
     }
 
     public void printBoard() {
@@ -176,12 +158,14 @@ public class Board {
         return validMoveExists;
     }
 
-    private int findLastOption(int[] moveOptions) {
+    private int countOptions(int[] moveOptions) {
+        int optionCount = 0;
         for (int i = moveOptions.length - 1; i >= 0; i--) {
             if (moveOptions[i] >= 0)
-                return i;
+                optionCount++;
         }
-        return -1; // should never happen
+
+        return optionCount;
     }
 
     private int getPlayerMove(int[] moveOptions, PlayerColor currentPlayer) {
@@ -189,27 +173,30 @@ public class Board {
         String homeMoveString = homeMoveAllowed ? "(0) to move a peg onto the board or " : "";
 
         String normalMoveString = "";
-        int lastOptionIndex = findLastOption(moveOptions);
+        int optionCount = countOptions(moveOptions);
         int moveCount = 0;
         for (int i = 0; i < moveOptions.length; i++) {
             if (moveOptions[i] < 0) continue;
 
-            if ((i == lastOptionIndex && moveCount == 0)) {
-                normalMoveString += String.format("(%s)", moveCount + 1);
+            if (optionCount == 1) {
+                normalMoveString += String.format("(%s) ", moveCount + 1);
+            } else if (optionCount == 2) {
                 if (moveCount == 0)
-                    normalMoveString += " ";
-            } else if (i == lastOptionIndex && moveCount == 1) {
-                normalMoveString += String.format(" or (%s) ", moveCount + 1);
-            } else if (i == lastOptionIndex) {
-                normalMoveString += String.format(", or (%s) ", moveCount + 1);
-            } else {
-                normalMoveString += String.format(", (%s)", moveCount + 1);
+                    normalMoveString += String.format("(%s) ", moveCount + 1);
+                else
+                    normalMoveString += String.format("or (%s) ", moveCount + 1);
+            } else if (optionCount >= 3) {
+                if (moveCount < optionCount)
+                    normalMoveString += String.format("(%s), ", moveCount + 1);
+                else
+                    normalMoveString += String.format("or (%s) ", moveCount + 1);
             }
             moveCount++;
         }
         // Select (0) to move a peg onto the board or (1), (2), or (3) to move a piece.
+
         String message = String.format(
-                "%sSelect %s%sto move a piece.%s",
+                "%sSelect %s%sto move a piece.\nPress [Enter] to confirm.%s",
                 currentPlayer.openTag(),
                 homeMoveString,
                 normalMoveString,
@@ -227,8 +214,10 @@ public class Board {
                 boolean isValidNormalMove = move > 0 && move <= moveCount;
                 validMove = isValidHomeMove || isValidNormalMove;
             } catch (NumberFormatException e) {
-                ioHelper.printString("Please enter a valid move.");
+
             }
+            if (!validMove)
+                ioHelper.printString("Please enter a valid move.");
         }
 
         return move;
@@ -241,8 +230,8 @@ public class Board {
         int validMovesIndex = 0;
 
         // can move a peg out if they rolled a 6 and they don't already have a peg there
-//        if (dieRoll == 6 && relativeBoard[0] != currentPlayer && homePegs[currentPlayer.intValue] > 0 ) {
-        if (relativeBoard[0] != currentPlayer && homePegs[currentPlayer.intValue] > 0) {
+        // and they have pegs in home
+        if (dieRoll == 6 && relativeBoard[0] != currentPlayer && homePegs[currentPlayer.intValue] > 0) {
             validMoves[validMovesIndex] = -2;
             validMovesIndex++;
         }
