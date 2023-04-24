@@ -11,6 +11,15 @@ public class Game {
         ascColor = Comparator.comparing(Player::getPlayerColor);
     }
 
+    final String Y;
+    final String END_Y;
+    final String B;
+    final String END_B;
+    final String R;
+    final String END_R;
+    final String G;
+    final String END_G;
+
     Random rand = new Random();
     Board board;
     IOHelper ioHelper;
@@ -19,6 +28,15 @@ public class Game {
     public Game(IOHelper ioHelper) {
         this.board = new Board(ioHelper);
         this.ioHelper = ioHelper;
+
+        this.Y = PlayerColor.YELLOW.openTag();
+        this.END_Y = PlayerColor.YELLOW.closeTag();
+        this.B = PlayerColor.BLUE.openTag();
+        this.END_B = PlayerColor.BLUE.closeTag();
+        this.R = PlayerColor.RED.openTag();
+        this.END_R = PlayerColor.RED.closeTag();
+        this.G = PlayerColor.GREEN.openTag();
+        this.END_G = PlayerColor.GREEN.closeTag();
     }
 
     public void start() {
@@ -79,14 +97,7 @@ public class Game {
 
     private void printWelcomeMessage() {
         ioHelper.clearConsole();
-        String Y = PlayerColor.YELLOW.openTag();
-        String END_Y = PlayerColor.YELLOW.closeTag();
-        String B = PlayerColor.BLUE.openTag();
-        String END_B = PlayerColor.BLUE.closeTag();
-        String R = PlayerColor.RED.openTag();
-        String END_R = PlayerColor.RED.closeTag();
-        String G = PlayerColor.GREEN.openTag();
-        String END_G = PlayerColor.GREEN.closeTag();
+
 
         // @formatter:off
         String message =
@@ -129,7 +140,6 @@ public class Game {
     }
 
     private PlayerColor getPlayerColor(int playerNumber) {
-        final String validInputs = "YyBbRrGg";
         while (true) {
             String playerInput = ioHelper.prompt(createPlayerColorPrompt(playerNumber));
 
@@ -163,7 +173,12 @@ public class Game {
 
     private String createPlayerColorPrompt(int playerNumber) {
         int playersCreatedCount = playerNumber - 1;
-        String[] optionsTemplate = new String[]{"(Y)ellow", "(B)lue", "(R)ed", "(G)reen"};
+        String[] optionsTemplate = new String[]{
+                String.format("%s(Y)ellow%s", Y, END_Y),
+                String.format("%s(B)lue%s", B, END_B),
+                String.format("%s(R)ed%s", R, END_R),
+                String.format("%s(G)reen%s", G, END_G),
+        };
         String[] options = new String[optionsTemplate.length - playersCreatedCount];
 
         int optionsIndex = 0;
