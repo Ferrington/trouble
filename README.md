@@ -36,15 +36,16 @@ When I started, I wasn't sure if I could display the game board in a satisfying 
 When I was satisfied with my board, I moved on to testing its rendering. I wanted to keep the board in a static position each time I updated its state. This is achievable by clearing the terminal and redrawing the board each time the game's state changes. I tested this by creating an animation to mimic the iconic "pop-o-matic" die roll.
 
 This is a bit out of order, but here's what the game ended up looking like for comparison.
+
 ![final game board](https://i.imgur.com/FFOmfM5.png)
 
 ### State
 
 Next up was deciding how to store the game's state. I ended up with the following variables:
 
-`normalSpaces` - This is an array that stores the 28 spaces that all players can traverse and interact with each other on.
-`finishLineSpaces` - This is a multidimensional array representing the final 4 spaces for each of the 4 players.
-`homePegs` - This is an array that keeps track of how many pegs each player still has in reserve.
+- `normalSpaces` - This is an array that stores the 28 spaces that all players can traverse and interact with each other on.
+- `finishLineSpaces` - This is a multidimensional array representing the final 4 spaces for each of the 4 players.
+- `homePegs` - This is an array that keeps track of how many pegs each player still has in reserve.
 
 Pretty simple right? A challenge presents itself when you map those variables onto the board.
 
