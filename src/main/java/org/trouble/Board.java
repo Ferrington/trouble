@@ -169,7 +169,7 @@ public class Board {
 
     private int getPlayerMove(int[] moveOptions, PlayerColor currentPlayer) {
         boolean homeMoveAllowed = contains(moveOptions, -2);
-        String homeMoveString = homeMoveAllowed ? "(0) to move a peg onto the board or " : "";
+        String homeMoveString = homeMoveAllowed ? "(0) to move a peg onto the board" : "";
 
         String normalMoveString = "";
         int optionCount = countOptions(moveOptions);
@@ -185,20 +185,24 @@ public class Board {
                 else
                     normalMoveString += String.format("or (%s) ", moveCount + 1);
             } else if (optionCount >= 3) {
-                if (moveCount < optionCount)
+                if (moveCount < optionCount - 1)
                     normalMoveString += String.format("(%s), ", moveCount + 1);
                 else
                     normalMoveString += String.format("or (%s) ", moveCount + 1);
             }
             moveCount++;
         }
+        String normalMovePre = homeMoveAllowed && optionCount > 0 ? " or " : "";
+        String normalMovePost = optionCount > 0 ? "to move a piece" : "";
         // Select (0) to move a peg onto the board or (1), (2), or (3) to move a piece.
 
         String message = String.format(
-                "%sSelect %s%sto move a piece.\nPress [Enter] to confirm.%s",
+                "%sSelect %s%s%s%s.\nPress [Enter] to confirm.%s",
                 currentPlayer.openTag(),
                 homeMoveString,
+                normalMovePre,
                 normalMoveString,
+                normalMovePost,
                 currentPlayer.closeTag()
         );
 
