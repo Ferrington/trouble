@@ -66,11 +66,11 @@ I tried to come up with some sort of scheme to pretend to be an object oriented 
 
 ![sketch of game logic flow](https://i.imgur.com/AU1ZqgU.png)
 
-I began by coming up with the basic logic of the game. The Main class is simply the entry point to the game. The game will deal with setting up the game and checking for a winner after every turn. The player will play. This seems ok, but what about the board? Where do I render that? Ok... I'll add a board class.
+I began by coming up with the basic logic of the game. The Main class is simply the entry point to the game. The Game class will deal with setting up the game and checking for a winner after every turn. The player will play. This seems ok, but what about the board? Where do I render that? Ok... I'll add a board class.
 
 ![sketch of class skeletons](https://i.imgur.com/v2q01X5.png)
 
-This is from pretty early on before I had all the methods figured out. I decided I wanted a class that would take care of the IO because I watched a youtube video on dependency injection once. I added a Board class to deal with the maintaining game's state and moving the pegs and whatnot.
+This is from pretty early on before I had all the methods figured out. I decided I wanted a class that would take care of the IO because I watched a youtube video on dependency injection once. I added a Board class to deal with maintaining the game's state and moving the pegs and whatnot.
 
 What ended up happening in the end was that the Board class ended up doing most of the heavy lifting. I created an enum called PlayerColor that seemed like good design until it started appearing in places that the Player class probably should have. In short, things got a bit messy as I got close to the finish line.
 
